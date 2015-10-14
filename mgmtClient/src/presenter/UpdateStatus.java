@@ -9,8 +9,9 @@ public class UpdateStatus extends CommonCommand {
 
 	@Override
 	public void doCommand(String param) {
-		if (param.equals("online"))
-			presenter.getView().setStatus(true);
+		if (param.equals("online")){
+			System.out.println("docommand");
+			presenter.getView().setStatus(true);}
 		else
 			presenter.getView().setStatus(false);
 

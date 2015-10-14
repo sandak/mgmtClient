@@ -1,6 +1,8 @@
 package GuiView;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionListener;
@@ -33,16 +35,21 @@ public class StatusMgmtWidget extends ServerDisplayer {
 			
 			@Override
 			public void paintControl(PaintEvent arg0) {
+				System.out.println("paint control " + serverStatus);
 				if (serverStatus == true)
 				{
 				StartStopButton.setText("  Stop Server  ");
-				status.setBackground(new Color(getDisplay(),0,204,0));
-				status.setText(" Server Started ");
+				
+				status.setBackground(new Color(getParent().getDisplay(),0,204,0));
+				status.setText(" Server online ");
+				System.out.println("paintin");
 			}else
 			{
 				StartStopButton.setText("  Start Server  ");
+				
 				status.setBackground(new Color(getDisplay(),255,0,0));
-				status.setText(" Server Stopped ");
+				status.setText(" Server offline ");
+				System.out.println("paintin");
 			}
 				StartStopButton.setLayoutData(new GridData(SWT.RIGHT, SWT.None, false, false, 1, 1));
 				status.setLayoutData(new GridData(SWT.LEFT, SWT.None, false, false, 1, 1));
@@ -51,7 +58,6 @@ public class StatusMgmtWidget extends ServerDisplayer {
 		}
 
 	public void setStartStopListener(SelectionListener startStopListener) {
-		System.out.println("3");
 		StartStopButton.addSelectionListener(startStopListener);
 		
 	}

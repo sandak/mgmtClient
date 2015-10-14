@@ -3,7 +3,10 @@ package GuiView;
 import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -74,11 +77,13 @@ public class MgmtWindow extends BasicWindow{
 		shell.setBackgroundImage(image);
 		shell.setBackgroundMode(SWT.INHERIT_FORCE);
 		//shell.setCursor(new Cursor(shell.getDisplay(), new ImageData("resources/Cursor_Greylight.png").scaledTo(27, 25), 16, 0));
-	System.out.println("1");
 		statusWidget = new StatusMgmtWidget(shell, SWT.NULL, startStopListener);
 		statusWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		widgetsList.add(statusWidget);
-	  
+		ServerDisplayer clientsWidget = new ClientsTableWidget(shell, SWT.NULL);
+		clientsWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		widgetsList.add(clientsWidget);
+	 
 		}
 		
 
@@ -97,9 +102,8 @@ public class MgmtWindow extends BasicWindow{
 	public void widgetsRefresh()
 	{
 		for (ServerDisplayer widget : widgetsList) {
+			System.out.println("widget refresh "+this.serverStatus);
 			widget.setServerStatus(this.serverStatus);
-				
-			
 		}
 	}
 	
@@ -188,12 +192,9 @@ public class MgmtWindow extends BasicWindow{
 	}
 
 
-
 	public void setStatus(boolean b) {
 		this.serverStatus = b;
 		widgetsRefresh();
-		
 	}
-
 
 }

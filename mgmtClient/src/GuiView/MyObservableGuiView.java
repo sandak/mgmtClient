@@ -119,9 +119,11 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 	 */
 	@Override
 	public void start() {
-		mainWindow.run();
 		setChanged();
 		notifyObservers("getStatus status");
+		mainWindow.run();
+		System.out.println("view started");
+		
 	}
 
 	/* (non-Javadoc)

@@ -54,9 +54,9 @@ public class MyObservableModel extends ObservableCommonModel {
 			parse = in.readLine();
 			setChanged();
 			if (parse.contains("online"))
-				notifyObservers("updateStatus online");
+				notifyObservers("getStatus status");
 			else
-				notifyObservers("updateStatus offline");
+				notifyObservers("getStatus status");
 
 			outToServer.println("exit");
 			outToServer.flush();
@@ -92,9 +92,13 @@ public class MyObservableModel extends ObservableCommonModel {
 			outToServer.println("get status");
 			outToServer.flush();
 			parse = in.readLine();
+			System.out.println(parse);
 			setChanged();
 			if (parse.contains("online"))
+			{
 				notifyObservers("updateStatus online");
+			System.out.println("online");
+			}
 			else
 				notifyObservers("updateStatus offline");
 
