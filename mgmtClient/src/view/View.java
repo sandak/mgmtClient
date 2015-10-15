@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+
 import presenter.Presenter;
 import presenter.Properties;
 
@@ -60,5 +62,7 @@ public interface View {
 	public void setProperties(Properties prop);
 
 	public void setStatus(boolean b);
+
+	public void setClientList(ArrayList<String[]> clientsList);
 	
 }

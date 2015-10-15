@@ -1,5 +1,7 @@
 package GuiView;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -13,22 +15,24 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 public class ClientsTableWidget extends ServerDisplayer {
-Table clientsList;
+Table clientsTable;
 Button kickClient;
+ArrayList<TableItem> items;
 
 	ClientsTableWidget(Composite arg0, int arg1) {
 		super(arg0, arg1);
+		items = new ArrayList<TableItem>();
 		setLayout(new GridLayout(2, false));
-		clientsList=new Table(this, SWT.BORDER|SWT.CHECK|SWT.V_SCROLL|SWT.H_SCROLL);
-		clientsList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		clientsList.setSize(500, 500);
-		clientsList.setHeaderVisible(true);
-		clientsList.setBackground(new Color(getDisplay(), 255,255,255));
+		clientsTable=new Table(this, SWT.BORDER|SWT.CHECK|SWT.V_SCROLL|SWT.H_SCROLL);
+		clientsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		clientsTable.setSize(500, 500);
+		clientsTable.setHeaderVisible(true);
+		clientsTable.setBackground(new Color(getDisplay(), 255,255,255));
 		
-		String[] titles = { "IP Address", "name" ,"email" };
+		String[] titles = { "ID", "Ip address" ,"Host name" };
 
 	    for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
-	      TableColumn column = new TableColumn(clientsList, SWT.NULL);
+	      TableColumn column = new TableColumn(clientsTable, SWT.NULL);
 	      column.setWidth(80);
 	      column.setText(titles[loopIndex]);
 	    }
@@ -40,9 +44,21 @@ Button kickClient;
 			
 			@Override
 			public void paintControl(PaintEvent arg0) {
-				TableItem t = new TableItem(clientsList,  SWT.NONE);
-				t.setText(new String[]{"test test test","name name","email"});
+				if(items!=null)
+					for (TableItem item : items) {
+						item.dispose();
+					}
+				if(clientsList!= null)
+				{
+				for (String[]  strings: clientsList) {
+				TableItem t = new TableItem(clientsTable,  SWT.NONE);
+				t.setText(strings);
 				t.setBackground(getBackground());
+				items.add(t);
+				}
+				}
+				
+				
 			}
 		});
 	}

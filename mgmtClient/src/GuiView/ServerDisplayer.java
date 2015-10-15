@@ -2,12 +2,15 @@ package GuiView;
 
 
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class ServerDisplayer extends Canvas {
 		protected boolean serverStatus;
+		protected ArrayList<String[]> clientsList;
 		
 	ServerDisplayer(Composite arg0,int arg1) {
 		super(arg0, arg1);
@@ -26,6 +29,17 @@ public abstract class ServerDisplayer extends Canvas {
 		    	redraw();
 		    }
 		});
+	}
+
+
+	public void setClientList(ArrayList<String[]> clientsList) {
+		this.clientsList = clientsList;
+		Display.getDefault().syncExec(new Runnable() {
+		    public void run() {								//redraws the Widget.
+		    	redraw();
+		    }
+		});
+		
 	}
 
 }

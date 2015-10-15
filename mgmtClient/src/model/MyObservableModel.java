@@ -34,8 +34,11 @@ public class MyObservableModel extends ObservableCommonModel {
 		this.updateHandler =  updateHandler;
 		updateHandler.setModel(this);
 		startUpdateChannel();
+		register();
 		
 	}
+
+
 
 	public void startUpdateChannel()
 	{
@@ -90,7 +93,31 @@ public class MyObservableModel extends ObservableCommonModel {
 	public void exit() { // TODO Auto-generated method stub
 
 	}
+	private void register() {
+		try{
+		Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
+		if (properties.isDebug())
+			System.out.println("connected to server!");
 
+		PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
+		BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
+		outToServer.println("register");
+		outToServer.flush();
+		in.readLine();
+		outToServer.println("exit");
+		outToServer.flush();
+
+		in.close();
+		outToServer.close();
+
+		theServer.close();
+
+	} catch (IOException e) {
+		// do nothing
+	}
+		
+	}
+	
 	@Override
 	public void startStopServer() {
 		try {
@@ -176,5 +203,9 @@ public class MyObservableModel extends ObservableCommonModel {
 			// do nothing
 		}
 	}
+
+
+
+
 
 }

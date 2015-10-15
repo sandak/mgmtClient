@@ -58,11 +58,16 @@ Model model;
 		{
 			i= 0;
 			tmp = new String [Integer.parseInt(line)];
+			line = in.readLine();
 			while (!(line.equals("client end")))
-					tmp[i++]=(line=in.readLine());
+			{
+					tmp[i++]=(line);
+					line=in.readLine();
+					}
 			list.add(tmp);	
 		} 
 		out.println("done");
+		out.flush();
 		model.updateClientsList(list);
 		} catch (IOException e) {
 					// TODO Auto-generated catch block

@@ -36,4 +36,6 @@ public interface Model {
 	void getStatus();
 
 	void updateClientsList(ArrayList<String[]> list);
+
+	ArrayList<String[]> getClientsList();
 }

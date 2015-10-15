@@ -47,6 +47,7 @@ public class MgmtWindow extends BasicWindow{
 	
 	/** The server properties. */
 	protected Properties properties;
+	protected  ArrayList<String[]> clientsList;
 	
 	/**
 	 * Instantiates a new maze window.
@@ -104,6 +105,7 @@ public class MgmtWindow extends BasicWindow{
 		for (ServerDisplayer widget : widgetsList) {
 			System.out.println("widget refresh "+this.serverStatus);
 			widget.setServerStatus(this.serverStatus);
+			widget.setClientList(this.clientsList);
 		}
 	}
 	
@@ -195,6 +197,14 @@ public class MgmtWindow extends BasicWindow{
 	public void setStatus(boolean b) {
 		this.serverStatus = b;
 		widgetsRefresh();
+	}
+
+
+
+	public void setClientsList(ArrayList<String[]> clientsList) {
+		this.clientsList= clientsList;
+		widgetsRefresh();
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package GuiView;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -171,6 +173,13 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 	@Override
 	public void setStatus(boolean b) {
 		mainWindow.setStatus(b);
+		
+	}
+
+
+	@Override
+	public void setClientList(ArrayList<String[]> clientsList) {
+		mainWindow.setClientsList(clientsList);
 		
 	}
 

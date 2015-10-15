@@ -39,9 +39,13 @@ public abstract class ObservableCommonModel extends Observable implements Model{
 	{
 		this.clientsList = list;
 		setChanged();
-		notifyObservers("updateClients clients");
+		notifyObservers("clientsUpdated clients");
 	}
-
+	
+	@Override
+	public ArrayList<String[]> getClientsList() {
+		return clientsList;
+	}
 }
 
 
