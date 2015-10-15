@@ -86,12 +86,12 @@ public class MyObservableModel extends ObservableCommonModel {
 				System.out.println("connected to server!");
 
 			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
+			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
 			String parse;
 
 			outToServer.println("get status");
 			outToServer.flush();
-			parse = in.readLine();
+			parse = inFromServer.readLine();
 			System.out.println(parse);
 			setChanged();
 			if (parse.contains("online"))
@@ -105,7 +105,7 @@ public class MyObservableModel extends ObservableCommonModel {
 			outToServer.println("exit");
 			outToServer.flush();
 
-			in.close();
+			inFromServer.close();
 			outToServer.close();
 
 			theServer.close();

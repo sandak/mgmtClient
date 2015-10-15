@@ -9,7 +9,7 @@ public class GetStatus extends CommonCommand {
 
 	@Override
 	public void doCommand(String param) {
-		System.out.println("hhgh");
+		System.out.println("docommand: GetStatus");
 		presenter.getModel().getStatus();
 
 	}
