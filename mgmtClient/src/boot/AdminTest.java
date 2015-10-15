@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import GuiView.MyObservableGuiView;
 import cliView.MyObservableCLIView;
 import model.MyObservableModel;
+import model.UpdateHandler;
 import presenter.Presenter;
 import presenter.Properties;
 import view.ObservableCommonView;
@@ -43,7 +44,7 @@ public class AdminTest {
 				view = new MyObservableGuiView("Server Manager", 800, 500);	
 		}
 				
-		MyObservableModel model = new MyObservableModel();
+		MyObservableModel model = new MyObservableModel(new UpdateHandler());
 		Presenter p = new Presenter(model,view);		
 				
 		p.setProperties(prop);		//setting the properties of the system for the presenter.

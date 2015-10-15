@@ -1,6 +1,8 @@
 package model;
 
 
+import java.util.ArrayList;
+
 import presenter.Properties;
 
 /**
@@ -32,4 +34,6 @@ public interface Model {
 	void terminateClient();
 
 	void getStatus();
+
+	void updateClientsList(ArrayList<String[]> list);
 }

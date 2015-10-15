@@ -2,9 +2,15 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -14,16 +20,72 @@ import java.net.Socket;
  *
  */
 public class MyObservableModel extends ObservableCommonModel {
-
+	ServerSocket updatesChannel;
+	Thread updateThread;
+	volatile boolean updateStop;
+	ExecutorService threadPool ;
+	ClientHandler updateHandler;
 	/**
 	 * Ctor. Tries to get old maps from cached maps , if failed initializing new
 	 * maps.
 	 */
-	public MyObservableModel() { // Ctor
+	public MyObservableModel(ClientHandler updateHandler) { // Ctor
 		super();
-
+		this.updateHandler =  updateHandler;
+		updateHandler.setModel(this);
+		startUpdateChannel();
+		
 	}
 
+	public void startUpdateChannel()
+	{
+		updateStop = false;
+		try {
+			updatesChannel = new ServerSocket(properties.getUpdatePort());
+			updatesChannel.setSoTimeout(properties.getTimeOut());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		threadPool = Executors.newFixedThreadPool(1);
+
+		updateThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (!updateStop) {
+					try {
+						final Socket someClient = updatesChannel.accept();
+						if (someClient != null) {
+							threadPool.execute(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										if (properties.isDebugMode())
+											System.out.println("server connecting in the update channel");
+										InputStream in = someClient.getInputStream();
+										OutputStream out = someClient.getOutputStream();
+										updateHandler.handleClient(in, out);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+						}
+					} catch (SocketTimeoutException e) {
+						System.out.println("no updates...");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println("done accepting new updates.");
+			} // end of the mainServerThread task
+		});
+
+		updateThread.start();
+
+	}
+	
 	@Override
 	public void exit() { // TODO Auto-generated method stub
 

@@ -83,7 +83,7 @@ public class MgmtWindow extends BasicWindow{
 		ServerDisplayer clientsWidget = new ClientsTableWidget(shell, SWT.NULL);
 		clientsWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		widgetsList.add(clientsWidget);
-	 
+		
 		}
 		
 

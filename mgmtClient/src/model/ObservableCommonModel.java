@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import presenter.Properties;
 
@@ -10,8 +11,8 @@ import presenter.Properties;
  */
 public abstract class ObservableCommonModel extends Observable implements Model{
 	
-	protected Properties properties;						//system properties.
-	
+	protected Properties properties;	//system properties.
+	protected ArrayList<String[]> clientsList;
 	
 	/**
 	 * Ctor
@@ -32,6 +33,13 @@ public abstract class ObservableCommonModel extends Observable implements Model{
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 		
+	}
+	@Override
+	public void updateClientsList(ArrayList<String[]> list)
+	{
+		this.clientsList = list;
+		setChanged();
+		notifyObservers("updateClients clients");
 	}
 
 }

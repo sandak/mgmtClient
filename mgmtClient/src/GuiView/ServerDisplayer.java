@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class ServerDisplayer extends Canvas {
-		boolean serverStatus;
+		protected boolean serverStatus;
 		
 	ServerDisplayer(Composite arg0,int arg1) {
 		super(arg0, arg1);
