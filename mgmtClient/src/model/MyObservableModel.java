@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -90,9 +91,65 @@ public class MyObservableModel extends ObservableCommonModel {
 	}
 	
 	@Override
-	public void exit() { // TODO Auto-generated method stub
+	public void exit() { 
+		unregister();
+		
+		
+		try {
+			updateStop=true;
+			// do not execute jobs in queue, continue to execute running threads
+			System.out.println("shutting down");
+			threadPool.shutdown();
+			// wait 10 seconds over and over again until all running jobs have
+			// finished
+			boolean allTasksCompleted = false;
+
+			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)))
+				
+
+			System.out.println("all the tasks have finished");
+
+			updateThread.join();
+			System.out.println("thread is done");
+
+			updatesChannel.close();
+			System.out.println(" session is safely closed");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
+	private void unregister() {
+		try{
+		Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
+		if (properties.isDebug())
+			System.out.println("connected to server!");
+
+		PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
+		BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
+		outToServer.println("unregister");
+		outToServer.flush();
+		in.readLine();
+		outToServer.println("exit");
+		outToServer.flush();
+
+		in.close();
+		outToServer.close();
+
+		theServer.close();
+
+	} catch (IOException e) {
+		// do nothing
+	}
+		
+	}
+
+
+
 	private void register() {
 		try{
 		Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
@@ -203,6 +260,42 @@ public class MyObservableModel extends ObservableCommonModel {
 			// do nothing
 		}
 	}
+
+
+
+@Override
+public void kick(String param) {
+	try {
+		Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
+		if (properties.isDebug())
+			System.out.println("connected to server!");
+
+		PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
+		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
+	
+
+		outToServer.println("kick request");
+		outToServer.flush();
+		inFromServer.readLine();//ok
+		outToServer.println("sending");
+		outToServer.flush();
+		inFromServer.readLine();//ready
+		outToServer.println(param);
+		outToServer.flush();
+		inFromServer.readLine();//done
+		outToServer.println("exit");
+		outToServer.flush();
+
+		inFromServer.close();
+		outToServer.close();
+
+		theServer.close();
+
+	} catch (IOException e) {
+		// do nothing
+	}
+	
+}
 
 
 

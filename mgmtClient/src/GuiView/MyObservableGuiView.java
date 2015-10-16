@@ -68,7 +68,7 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 
 	
 ////////////////////////the selection listener that sets the behavior of - start / stop request - in this specific MVP  ////////////
-		System.out.println("2");
+
 		mainWindow.setStartStopListener(new SelectionListener() {
 	
 	@Override
@@ -79,6 +79,7 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 		
 	}
 	
+
 	@Override
 	public void widgetDefaultSelected(SelectionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -86,9 +87,35 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 	}
 });
 
+
+	
+////////////////////////the selection listener that sets the behavior of - kick client reqest - in this specific MVP  ////////////
+
+mainWindow.setKickListener(new SelectionListener() {
+
+@Override
+public void widgetSelected(SelectionEvent arg0) {
+setChanged();
+String s = "kickRequest ";
+String [] strings = mainWindow.getKickList();
+for (String string : strings) {
+	s=s+string+":";
 }
+System.out.println(s);
+notifyObservers(s);
+
+}
+
+@Override
+public void widgetDefaultSelected(SelectionEvent arg0) {
 	
 	
+}
+});
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see view.View#display(java.lang.String[])
 	 */
@@ -123,9 +150,9 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 	public void start() {
 		setChanged();
 		notifyObservers("getStatus status");
-		mainWindow.run();
 		System.out.println("view started");
-		
+		mainWindow.run();
+
 	}
 
 	/* (non-Javadoc)

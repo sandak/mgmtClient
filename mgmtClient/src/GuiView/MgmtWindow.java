@@ -29,6 +29,7 @@ public class MgmtWindow extends BasicWindow{
 	Button StartStopButton;
 	Label status;
 	StatusMgmtWidget statusWidget;
+	ClientsTableWidget clientsWidget;
 	/** The selected XML properties file. */
 	protected String selectedXMLpropertiesFile;
 	
@@ -48,6 +49,7 @@ public class MgmtWindow extends BasicWindow{
 	/** The server properties. */
 	protected Properties properties;
 	protected  ArrayList<String[]> clientsList;
+	protected SelectionListener kickListener;
 	
 	/**
 	 * Instantiates a new maze window.
@@ -72,7 +74,7 @@ public class MgmtWindow extends BasicWindow{
 	 */
 	@Override
 	void initWidgets() {
-		shell.addDisposeListener(exitListener);			//for X button and 'Exit' button
+	shell.addDisposeListener(exitListener);				//for X button and 'Exit' button
 		shell.setLayout(new GridLayout(1,false));	
 		Image image= new Image(display,"resources/mgmtbackground.jpg");
 		shell.setBackgroundImage(image);
@@ -81,9 +83,10 @@ public class MgmtWindow extends BasicWindow{
 		statusWidget = new StatusMgmtWidget(shell, SWT.NULL, startStopListener);
 		statusWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		widgetsList.add(statusWidget);
-		ServerDisplayer clientsWidget = new ClientsTableWidget(shell, SWT.NULL);
+		clientsWidget = new ClientsTableWidget(shell, SWT.NULL);
 		clientsWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		widgetsList.add(clientsWidget);
+		clientsWidget.setKickListener(kickListener);
 		
 		}
 		
@@ -168,6 +171,8 @@ public class MgmtWindow extends BasicWindow{
 	 */
 	public void setExitListener(DisposeListener exitListener) {
 		this.exitListener = exitListener;
+		if (shell!=null)
+			shell.addDisposeListener(exitListener);	
 	}
 
 
@@ -207,4 +212,16 @@ public class MgmtWindow extends BasicWindow{
 		
 	}
 
+
+
+	public void setKickListener(SelectionListener selectionListener) {
+		this.kickListener = selectionListener;
+		if(clientsWidget!=null)
+			clientsWidget.setKickListener(selectionListener);
+		
+		
+	}
+public String [] getKickList(){
+	return clientsWidget.getKicks();
+}
 }

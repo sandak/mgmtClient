@@ -38,4 +38,6 @@ public interface Model {
 	void updateClientsList(ArrayList<String[]> list);
 
 	ArrayList<String[]> getClientsList();
+
+	void kick(String param);
 }
