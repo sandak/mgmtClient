@@ -75,19 +75,24 @@ public class MgmtWindow extends BasicWindow{
 	@Override
 	void initWidgets() {
 	shell.addDisposeListener(exitListener);				//for X button and 'Exit' button
-		shell.setLayout(new GridLayout(1,false));	
+		shell.setLayout(new GridLayout(2,true));
 		Image image= new Image(display,"resources/mgmtbackground.jpg");
 		shell.setBackgroundImage(image);
 		shell.setBackgroundMode(SWT.INHERIT_FORCE);
 		//shell.setCursor(new Cursor(shell.getDisplay(), new ImageData("resources/Cursor_Greylight.png").scaledTo(27, 25), 16, 0));
 		statusWidget = new StatusMgmtWidget(shell, SWT.NULL, startStopListener);
-		statusWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		statusWidget.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, false, 2, 1));
 		widgetsList.add(statusWidget);
 		clientsWidget = new ClientsTableWidget(shell, SWT.NULL);
-		clientsWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		clientsWidget.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1));
 		widgetsList.add(clientsWidget);
 		clientsWidget.setKickListener(kickListener);
 		
+		ServerLogWidget serverLog = new ServerLogWidget(shell,SWT.NULL);
+		serverLog.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1));
+		widgetsList.add(serverLog);
+		
+		shell.pack();
 		}
 		
 
