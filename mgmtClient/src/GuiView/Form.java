@@ -19,11 +19,9 @@ import org.eclipse.swt.widgets.Text;
  * @author Guy Golan && Amit Sandak.
  * @param <T> the generic type
  */
-public class Form<T> {
+public class Form extends BasicWindow{
 
-	/** The new object that created by the form. */
-	protected T created;
-	
+	Object created;
 	Shell shell;
 	
 	/**
@@ -35,12 +33,12 @@ public class Form<T> {
 	 * @param width the width of the shell
 	 * @param height the height of the shell
 	 */
-	public Form(Shell parent, T classObject, String title, int width, int height) {
-
-		shell = new Shell(parent.getDisplay());
-		created = null;
+	public Form(/*Shell parent,*/ Class format, String title, int width, int height) {
+		super(title,width,height);
+		//shell = new Shell(parent.getDisplay());
+		//created = null;
 		shell.setLayout(new GridLayout(2,false));
-		Class<? extends Object> format = classObject.getClass();
+		//Class<? extends Object> format = classObject.getClass();
 		Label titel = new Label(shell,SWT.CENTER);
 		titel.setText(format.getName());
 		titel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
@@ -60,13 +58,13 @@ public class Form<T> {
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						try {
-							created=(T) format.getConstructor().newInstance();
-					
+							//created=format.getConstructor().newInstance();
+							created=format.newInstance();
 							for (Field field : fields) {
-								System.out.println(field.getName());
+								//System.out.println(field.getName());
 								String tmp = hm.get(field.getName()).getText();
 								
-								System.out.println(tmp);
+								//System.out.println(tmp);
 								String type = field.getType().getSimpleName();
 								switch (type)
 								{
@@ -85,7 +83,7 @@ public class Form<T> {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 						}
-						catch (InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+						catch (InstantiationException | SecurityException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}	
@@ -106,7 +104,7 @@ public class Form<T> {
 	 *
 	 * @return the object
 	 */
-	public T getObject() {
+	public Object getObject() {
 		return created;
 		
 	}
@@ -117,5 +115,12 @@ public class Form<T> {
 public void run()
 {
 	shell.open();
+}
+
+
+@Override
+void initWidgets() {
+	// TODO Auto-generated method stub
+	
 }
 }
