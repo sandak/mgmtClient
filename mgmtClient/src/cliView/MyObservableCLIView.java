@@ -3,6 +3,8 @@ package cliView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+
 import presenter.Properties;
 
 /**
@@ -136,6 +138,18 @@ public class MyObservableCLIView extends ObservableCommonCLIView {
 	public void setStatus(boolean b) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setClientList(ArrayList<String[]> clientsList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateLog(String param) {
+		System.out.println("log: " + param);
+		
 	}
 
 }
