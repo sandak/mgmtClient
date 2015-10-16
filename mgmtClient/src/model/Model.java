@@ -40,4 +40,10 @@ public interface Model {
 	ArrayList<String[]> getClientsList();
 
 	void kick(String param);
+
+	void updateLog(String parse);
+
+	void updateStatus(String stat);
+
+	void getData();
 }

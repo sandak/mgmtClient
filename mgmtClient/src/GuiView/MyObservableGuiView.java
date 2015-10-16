@@ -1,6 +1,8 @@
 package GuiView;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -148,9 +150,18 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 	 */
 	@Override
 	public void start() {
-		setChanged();
-		notifyObservers("getStatus status");
-		System.out.println("view started");
+		Timer t =new Timer();
+		TimerTask tt = new TimerTask() {
+			
+			@Override
+			public void run() {
+				setChanged();
+		notifyObservers("getData data");
+		this.cancel();
+			}
+		};
+		t.scheduleAtFixedRate(tt, 500 , 1000*60);
+		
 		mainWindow.run();
 
 	}
@@ -207,6 +218,14 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 	@Override
 	public void setClientList(ArrayList<String[]> clientsList) {
 		mainWindow.setClientsList(clientsList);
+		
+	}
+
+
+
+	@Override
+	public void updateLog(String param) {
+		mainWindow.updateLog(param);
 		
 	}
 

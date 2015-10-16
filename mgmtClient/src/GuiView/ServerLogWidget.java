@@ -51,8 +51,8 @@ public class ServerLogWidget extends ServerDisplayer {
 	
 	public void appendText(String text)
 	{
-		
-		this.displayedText =""+d.toString()+"--->>>"+text;
+		this.d = new Date();
+		this.displayedText =displayedText+"\n"+d.toString()+" --->>>"+text;
 	}
 	
 	

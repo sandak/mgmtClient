@@ -41,7 +41,8 @@ public class Presenter implements Observer {
 		commandMap.put("getStatus", new GetStatus(this));
 		commandMap.put("clientsUpdated", new ClientsUpdated(this));
 		commandMap.put("kickRequest", new KickRequest(this));
-			
+		commandMap.put("updateLog", new UpdateLog(this));
+		commandMap.put("getData", new GetData(this));
 		
 	}
 

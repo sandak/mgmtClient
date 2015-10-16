@@ -64,5 +64,7 @@ public interface View {
 	public void setStatus(boolean b);
 
 	public void setClientList(ArrayList<String[]> clientsList);
+
+	public void updateLog(String param);
 	
 }
