@@ -7,6 +7,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,6 +27,7 @@ import presenter.Properties;
 public class MgmtWindow extends BasicWindow {
 	boolean serverStatus;
 	Button StartStopButton;
+	Button shutDown;
 	Label status;
 	StatusMgmtWidget statusWidget;
 	ClientsTableWidget clientsWidget;
@@ -60,6 +62,7 @@ public class MgmtWindow extends BasicWindow {
 	protected Properties properties;
 	protected ArrayList<String[]> clientsList;
 	protected SelectionListener kickListener;
+	protected SelectionListener shutdownListener;
 
 	/**
 	 * Instantiates a new maze window.
@@ -97,6 +100,15 @@ public class MgmtWindow extends BasicWindow {
 		// shell.setCursor(new Cursor(shell.getDisplay(), new
 		// ImageData("resources/Cursor_Greylight.png").scaledTo(27, 25), 16,
 		// 0));
+		shutDown = new Button(shell, SWT.PUSH);
+		shutDown.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, false, 2, 1));
+		
+//		GC gc = new GC(shell);
+//		Image btimage = new Image(display, "resources/abort.jpg");
+//		gc.drawImage(btimage, 0, 0, btimage.getBounds().x, btimage.getBounds().y, 0, 0, shutDown.getBounds().width,shutDown.getBounds().height);
+//			shutDown.setImage(btimage);
+			shutDown.setText("        Shutdown server         ");
+			shutDown.addSelectionListener(shutdownListener);
 		statusWidget = new StatusMgmtWidget(shell, SWT.NULL, startStopListener);
 		statusWidget.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, false, 2, 1));
 		widgetsList.add(statusWidget);
@@ -244,5 +256,12 @@ public class MgmtWindow extends BasicWindow {
 		if(serverLog!=null)
 		serverLog.appendText(param);
 
+	}
+
+	public void setShutdownListener(SelectionListener selectionListener) {
+		this.shutdownListener = selectionListener;
+		if (shutDown!=null)
+			shutDown.addSelectionListener(shutdownListener);
+		
 	}
 }

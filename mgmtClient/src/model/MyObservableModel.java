@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -26,6 +27,10 @@ public class MyObservableModel extends ObservableCommonModel {
 	volatile boolean updateStop;
 	ExecutorService threadPool;
 	ClientHandler updateHandler;
+	Socket outChannelSocket;
+	PrintWriter outToServer;
+	BufferedReader inFromServer;
+	boolean exitOnce;
 
 	/**
 	 * Ctor. Tries to get old maps from cached maps , if failed initializing new
@@ -35,11 +40,28 @@ public class MyObservableModel extends ObservableCommonModel {
 		super();
 		this.updateHandler = updateHandler;
 		updateHandler.setModel(this);
-		startUpdateChannel();
-		register();
 
 	}
+@Override
+	public boolean start()
+	{
+	try{
+	
+	outChannelSocket = new Socket(properties.getServerIP(), properties.getMgmtPort());
+	if (properties.isDebug())
+		System.out.println("connected to server!");
+	outToServer = new PrintWriter(outChannelSocket.getOutputStream());
+	inFromServer = new BufferedReader(new InputStreamReader(outChannelSocket.getInputStream()));
+	
+	startUpdateChannel();
+	
+	register();	
+	return true;
+	}catch (ConnectException e)
+	{return false;}catch (IOException e)
+	{return false;}
 
+	}
 	public void startUpdateChannel() {
 		updateStop = false;
 		try {
@@ -90,8 +112,31 @@ public class MyObservableModel extends ObservableCommonModel {
 
 	@Override
 	public void exit() {
-		unregister();
+		  
+		 if(exitOnce==false){
+			 exitOnce= true;
+		try{
+			if(outChannelSocket!=null)
+			{
+			unregister();
+			outToServer.println("exit");
+				outToServer.flush();
+			}
+				
+				
+				
+			if(inFromServer!=null)
+				inFromServer.close();
+			if(outToServer!=null)
+				outToServer.close();
 
+			if(outChannelSocket!=null)
+				if(outChannelSocket.isConnected())
+					outChannelSocket.close();
+			}catch(IOException e)
+			{}
+	
+		if(updatesChannel!=null)
 		try {
 			updateStop = true;
 			// do not execute jobs in queue, continue to execute running threads
@@ -99,10 +144,13 @@ public class MyObservableModel extends ObservableCommonModel {
 			threadPool.shutdown();
 			// wait 10 seconds over and over again until all running jobs have
 			// finished
-			boolean allTasksCompleted = false;
-
-			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)))
-
+//			boolean allTasksCompleted = false;
+//			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)));
+			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
+							threadPool.shutdownNow();
+							if (properties.isDebugMode())
+								System.out.println("threads terminated violently!");
+						}
 				System.out.println("all the tasks have finished");
 
 			updateThread.join();
@@ -117,28 +165,15 @@ public class MyObservableModel extends ObservableCommonModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		 }
 	}
 
 	private void unregister() {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
 			outToServer.println("unregister");
 			outToServer.flush();
-			in.readLine();
-			outToServer.println("exit");
-			outToServer.flush();
-
-			in.close();
-			outToServer.close();
-
-			theServer.close();
-
+			inFromServer.readLine();
+		
 		} catch (IOException e) {
 			// do nothing
 		}
@@ -147,87 +182,54 @@ public class MyObservableModel extends ObservableCommonModel {
 
 	private void register() {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
 			outToServer.println("register");
 			outToServer.flush();
-			in.readLine();
-			outToServer.println("exit");
-			outToServer.flush();
+			inFromServer.readLine();
 
-			in.close();
-			outToServer.close();
-
-			theServer.close();
+			
 
 		} catch (IOException e) {
 			// do nothing
 		}
-
+	
 	}
 
 	@Override
 	public void startStopServer() {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-			String parse;
+				String parse;
 			outToServer.println("get status");
 			outToServer.flush();
 
-			parse = in.readLine();
+			parse = inFromServer.readLine();
 			if (parse.contains("online"))
 				outToServer.println("stop server");
 			else
 				outToServer.println("start server");
 			outToServer.flush();
-			parse = in.readLine();
+			parse = inFromServer.readLine();
 			outToServer.println("get status");
 			outToServer.flush();
-			parse = in.readLine();
+			parse = inFromServer.readLine();
 			setChanged();
 			if (parse.contains("online"))
 				notifyObservers("getStatus status");
 			else
 				notifyObservers("getStatus status");
 
-			outToServer.println("exit");
-			outToServer.flush();
+		
 
-			in.close();
-			outToServer.close();
-
-			theServer.close();
-
+			
 		} catch (IOException e) {
 			// do nothing
 		}
 
 	}
 
-	@Override
-	public void terminateClient() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void getStatus() {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
 			String parse;
 
 			outToServer.println("get status");
@@ -241,14 +243,8 @@ public class MyObservableModel extends ObservableCommonModel {
 			} else
 				notifyObservers("updateStatus offline");
 
-			outToServer.println("exit");
-			outToServer.flush();
 
-			inFromServer.close();
-			outToServer.close();
-
-			theServer.close();
-
+			
 		} catch (IOException e) {
 			// do nothing
 		}
@@ -257,13 +253,7 @@ public class MyObservableModel extends ObservableCommonModel {
 	@Override
 	public void kick(String param) {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-
+			
 			outToServer.println("kick request");
 			outToServer.flush();
 			inFromServer.readLine();// ok
@@ -273,13 +263,7 @@ public class MyObservableModel extends ObservableCommonModel {
 			outToServer.println(param);
 			outToServer.flush();
 			inFromServer.readLine();// done
-			outToServer.println("exit");
-			outToServer.flush();
-
-			inFromServer.close();
-			outToServer.close();
-
-			theServer.close();
+	
 
 		} catch (IOException e) {
 			// do nothing
@@ -303,28 +287,34 @@ public class MyObservableModel extends ObservableCommonModel {
 	@Override
 	public void getData() {
 		try {
-			Socket theServer = new Socket(properties.getServerIP(), properties.getMgmtPort());
-			if (properties.isDebug())
-				System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-
+			
 			outToServer.println("get data");
 			outToServer.flush();
 			inFromServer.readLine();//ok
 
-			outToServer.println("exit");
-			outToServer.flush();
 
-			inFromServer.close();
-			outToServer.close();
-
-			theServer.close();
+			
 
 		} catch (IOException e) {
 			// do nothing
 		}
+		
+	}
+	@Override
+	public void shutDownProtocol() {
+		try {
+		outToServer.println("shutdown");
+		outToServer.flush();
+		inFromServer.readLine();//ok
+		} catch (IOException e) {
+			// do nothing
+		}
+	}
+	@Override
+	public void shutdownUpdate() {
+		setChanged();
+		notifyObservers("message server is ahuting down!" );
+		notifyObservers("exit exit");
 		
 	}
 

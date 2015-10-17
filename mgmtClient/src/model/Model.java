@@ -31,7 +31,6 @@ public interface Model {
 	Properties getProperties();
 	
 	void startStopServer();
-	void terminateClient();
 
 	void getStatus();
 
@@ -46,4 +45,10 @@ public interface Model {
 	void updateStatus(String stat);
 
 	void getData();
+
+	boolean start();
+
+	void shutDownProtocol();
+
+	void shutdownUpdate();
 }

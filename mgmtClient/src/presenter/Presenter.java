@@ -31,9 +31,8 @@ public class Presenter implements Observer {
 		model.setProperties(properties);	//informing the model of the system properties.
 		
 		this.commandMap = new HashMap<String , Command>();		//inserting all the Commands into the map
-		commandMap.put("display", new Display(this));
 		commandMap.put("exit", new Exit(this));
-		commandMap.put("completedTask", new CompletedTask(this));
+		commandMap.put("message", new Message(this));
 		commandMap.put("propertiesUpdate", new PropertiesUpdate(this));
 		commandMap.put("switchUi", new SwitchUi(this));
 		commandMap.put("changeServerStatus", new ChangeServerStatus(this));
@@ -43,9 +42,19 @@ public class Presenter implements Observer {
 		commandMap.put("kickRequest", new KickRequest(this));
 		commandMap.put("updateLog", new UpdateLog(this));
 		commandMap.put("getData", new GetData(this));
+		commandMap.put("shutdownRequest", new ShutdownRequest(this));
 		
 	}
-
+public void start()
+{
+	if(model.start())
+		view.start();
+	else{
+		view.displayError("error, server unaviable!");
+		model.exit();
+	}
+}
+	
 	@Override
 	public void update(Observable comp, Object id) {
 		String identifier = ((String)id); //TODO check type

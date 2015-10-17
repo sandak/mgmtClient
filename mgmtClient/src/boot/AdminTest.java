@@ -53,7 +53,7 @@ public class AdminTest {
 		model.addObserver(p);		//presenter observing the model for changes.
 		view.addObserver(p);		//presenter observing the view for changes.
 				
-		view.start();				//start of the user interface.
+		p.start();				//start of the user interface.
 	}
 
 }

@@ -68,7 +68,23 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 			}
 		});
 
+////////////////////////the selection listener that sets the behavior of - shutdown request - in this specific MVP  ////////////
+mainWindow.setShutdownListener(new SelectionListener() {
 	
+	@Override
+	public void widgetSelected(SelectionEvent arg0) {
+		setChanged();
+		notifyObservers("shutdownRequest shutdown");
+		
+	}
+	
+	@Override
+	public void widgetDefaultSelected(SelectionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+});
+
 ////////////////////////the selection listener that sets the behavior of - start / stop request - in this specific MVP  ////////////
 
 		mainWindow.setStartStopListener(new SelectionListener() {

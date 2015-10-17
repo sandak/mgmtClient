@@ -23,10 +23,10 @@ public class UpdateHandler implements ClientHandler {
 					clientsUpdate(in, out);
 				if (line.contains("status push"))
 					statusUpdate(in, out);
-				if (line.contains("serverShutdown"))
-					serverShutdown(in, out);
 				if (line.contains("log push"))
 					logUpdate(in, out);
+				if (line.contains("shutdown push"))
+					shutdownUpdate(in, out);
 			}
 			in.close();
 			out.close();
@@ -34,6 +34,12 @@ public class UpdateHandler implements ClientHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void shutdownUpdate(BufferedReader in, PrintWriter out) {
+		out.println("ok");
+		model.shutdownUpdate();
+		
 	}
 
 	private void logUpdate(BufferedReader in, PrintWriter out) {
@@ -48,11 +54,6 @@ public class UpdateHandler implements ClientHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-	}
-
-	private void serverShutdown(BufferedReader in, PrintWriter out) {
-		// TODO Auto-generated method stub
 
 	}
 
