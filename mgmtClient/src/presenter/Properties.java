@@ -10,12 +10,13 @@ import java.net.SocketImpl;
  *
  */
 
+@SuppressWarnings("serial")
 public class Properties implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+
 	protected boolean debugMode; // on or off.
 	protected String ui; // which ui to present.
 	protected String serverIP;

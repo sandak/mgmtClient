@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import GuiView.Form;
 import GuiView.MyObservableGuiView;
 import cliView.MyObservableCLIView;
 import model.MyObservableModel;
@@ -18,19 +19,21 @@ import view.ObservableCommonView;
 public class AdminTest {
 
 	public static void main(String[] args) {
+		Form f = new Form(Properties.class,"properties");
+		f.run();
 		String defaultXMLname = "properties.xml";
-		Properties prop;
-		try {
-			FileInputStream in = new FileInputStream(defaultXMLname);		//tries to read the properties.xml default pathname.
-			XMLDecoder decoder = new XMLDecoder(in);
-			prop = (Properties)decoder.readObject();		//decoding the xml file.
-			decoder.close();
-					
-		} catch (FileNotFoundException e) {				//if no properties.xml was found in directory, generating default properties.
-			System.out.println("file not found, default properties will be loaded");
-			prop = new Properties();
-			prop.setDefaults();
-		}
+		Properties prop=(Properties)f.getObject();
+//		try {
+//			FileInputStream in = new FileInputStream(defaultXMLname);		//tries to read the properties.xml default pathname.
+//			XMLDecoder decoder = new XMLDecoder(in);
+//			prop = (Properties)decoder.readObject();		//decoding the xml file.
+//			decoder.close();
+//					
+//		} catch (FileNotFoundException e) {				//if no properties.xml was found in directory, generating default properties.
+//			System.out.println("file not found, default properties will be loaded");
+//			prop = new Properties();
+//			prop.setDefaults();
+//		}
 		ObservableCommonView view = null;
 		switch (prop.getUi())				//according to the properties initializing the view.
 		{
