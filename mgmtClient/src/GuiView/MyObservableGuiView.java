@@ -171,9 +171,10 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 			
 			@Override
 			public void run() {
+				t.cancel();
 				setChanged();
 		notifyObservers("getData data");
-		this.cancel();
+		
 			}
 		};
 		t.scheduleAtFixedRate(tt, 500 , 1000*60);

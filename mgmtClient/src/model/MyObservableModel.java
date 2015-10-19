@@ -30,7 +30,6 @@ public class MyObservableModel extends ObservableCommonModel {
 	Socket outChannelSocket;
 	PrintWriter outToServer;
 	BufferedReader inFromServer;
-	boolean exitOnce;
 
 	/**
 	 * Ctor. Tries to get old maps from cached maps , if failed initializing new
@@ -90,6 +89,9 @@ public class MyObservableModel extends ObservableCommonModel {
 										InputStream in = someClient.getInputStream();
 										OutputStream out = someClient.getOutputStream();
 										updateHandler.handleClient(in, out);
+										in.close();
+										out.close();
+										someClient.close();
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
@@ -112,18 +114,19 @@ public class MyObservableModel extends ObservableCommonModel {
 
 	@Override
 	public void exit() {
-		  
-		 if(exitOnce==false){
-			 exitOnce= true;
 		try{
 			if(outChannelSocket!=null)
 			{
-			unregister();
+				System.out.println("%1");
+				unregister();
+					System.out.println("%2");
+
 			outToServer.println("exit");
 				outToServer.flush();
+				System.out.println("%3");
 			}
 				
-				
+			System.out.println("%4");
 				
 			if(inFromServer!=null)
 				inFromServer.close();
@@ -135,9 +138,10 @@ public class MyObservableModel extends ObservableCommonModel {
 					outChannelSocket.close();
 			}catch(IOException e)
 			{}
-	
+		System.out.println("%5");
 		if(updatesChannel!=null)
 		try {
+			System.out.println("exitexit###################");
 			updateStop = true;
 			// do not execute jobs in queue, continue to execute running threads
 			System.out.println("shutting down");
@@ -165,15 +169,14 @@ public class MyObservableModel extends ObservableCommonModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 }
 	}
+
 
 	private void unregister() {
 		try {
 			outToServer.println("unregister");
 			outToServer.flush();
 			inFromServer.readLine();
-		
 		} catch (IOException e) {
 			// do nothing
 		}
@@ -313,7 +316,8 @@ public class MyObservableModel extends ObservableCommonModel {
 	@Override
 	public void shutdownUpdate() {
 		setChanged();
-		notifyObservers("message server is ahuting down!" );
+		notifyObservers("message server is shuting down!" );
+		setChanged();
 		notifyObservers("exit exit");
 		
 	}

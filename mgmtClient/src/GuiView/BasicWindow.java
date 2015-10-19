@@ -52,7 +52,15 @@ public abstract class BasicWindow implements Runnable{
 	 */
 	public void exit()
 	{
-		shell.dispose(); 
+		Display.getDefault().syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				shell.dispose(); 
+				
+			}
+		});
+		
 	}
 	
 }
