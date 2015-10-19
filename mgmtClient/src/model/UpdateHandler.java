@@ -28,9 +28,6 @@ public class UpdateHandler implements ClientHandler {
 				if (line.contains("shutdown push"))
 					shutdownUpdate(in, out);
 			}
-			in.close();
-			out.close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
