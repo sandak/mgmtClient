@@ -1,7 +1,6 @@
 package presenter;
 
 import java.io.Serializable;
-import java.net.SocketImpl;
 
 /**
  * Properties for the game system.
@@ -22,7 +21,7 @@ public class Properties implements Serializable {
 	protected String serverIP;
 	protected int mgmtPort;
 	protected int updatePort;
-	protected int timeOut;
+	
 
 	public Properties() {
 		super();
@@ -37,7 +36,7 @@ public class Properties implements Serializable {
 		this.serverIP = "localhost";
 		this.mgmtPort = 4040;
 		this.updatePort = 9003;
-		this.timeOut = 10*1000;
+		
 	}
 									//--------------REGULAR SETTERS AND GETTERS------------------
 	public boolean isDebug() {
@@ -87,13 +86,7 @@ public class Properties implements Serializable {
 		return updatePort;
 	}
 
-	public int getTimeOut() {
-		return timeOut;
-	}
-
-	public void setTimeOut(int timeOut) {
-		this.timeOut = timeOut;
-	}
+	
 
 	public void setUpdatePort(int updatePort) {
 		this.updatePort = updatePort;

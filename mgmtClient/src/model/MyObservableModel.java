@@ -66,7 +66,7 @@ public class MyObservableModel extends ObservableCommonModel {
 		updateStop = false;
 		try {
 			updatesChannel = new ServerSocket(properties.getUpdatePort());
-			updatesChannel.setSoTimeout(properties.getTimeOut());
+			updatesChannel.setSoTimeout(10000);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
