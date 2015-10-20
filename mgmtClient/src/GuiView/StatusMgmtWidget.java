@@ -48,21 +48,18 @@ public class StatusMgmtWidget extends ServerDisplayer {
 			
 			@Override
 			public void paintControl(PaintEvent arg0) {
-				System.out.println("paint control " + serverStatus);
 				if (serverStatus == true)  //checks the service status and update the matched GUI 
 				{
 				StartStopButton.setText("  Stop Service  ");
 				
 				status.setBackground(new Color(getParent().getDisplay(),0,204,0));
 				status.setText(" Service online ");
-				System.out.println("paintin");
 			}else
 			{
 				StartStopButton.setText("  Start Service  ");
 				
 				status.setBackground(new Color(getDisplay(),255,0,0));
 				status.setText(" Service offline ");
-				System.out.println("paintin");
 			}
 				StartStopButton.setLayoutData(new GridData(SWT.RIGHT, SWT.None, false, false, 1, 1));
 				status.setLayoutData(new GridData(SWT.LEFT, SWT.None, false, false, 1, 1));

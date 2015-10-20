@@ -25,7 +25,6 @@ public class RunMgmtApp {
 		Form f = new Form(Properties.class,"properties");
 		f.run();
 		Properties prop=(Properties)f.getObject();
-
 		ObservableCommonView view = null;
 		switch (prop.getUi())				//according to the properties initializing the view.
 		{
@@ -43,7 +42,7 @@ public class RunMgmtApp {
 		Presenter p = new Presenter(model,view);		
 				
 		p.setProperties(prop);		//setting the properties of the system for the presenter.
-		p.setDebugMode(true);		//debug mode turned on.
+		//p.setDebugMode(true);		//debug mode turned on.
 				
 		model.addObserver(p);		//presenter observing the model for changes.
 		view.addObserver(p);		//presenter observing the view for changes.

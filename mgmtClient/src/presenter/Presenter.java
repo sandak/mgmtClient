@@ -83,7 +83,6 @@ public void start()
 	public void update(Observable comp, Object id) {
 		String identifier = ((String)id); 
 		Command c = commandMap.get(identifier.split(" ")[0]);
-		System.out.println(identifier);
 		if(c != null)
 		{
 			if(identifier.split(" ").length > 1)

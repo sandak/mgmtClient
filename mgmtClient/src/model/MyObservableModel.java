@@ -267,7 +267,6 @@ public class MyObservableModel extends ObservableCommonModel {
 			outToServer.println("get status");
 			outToServer.flush();
 			parse = inFromServer.readLine();
-			System.out.println(parse);
 			setChanged();
 			if (parse.contains("online")) {
 				notifyObservers("updateStatus online");

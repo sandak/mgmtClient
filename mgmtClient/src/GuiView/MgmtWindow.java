@@ -132,7 +132,6 @@ public class MgmtWindow extends BasicWindow {
 	 */
 	public void widgetsRefresh() {
 		for (ServerDisplayer widget : widgetsList) {
-			System.out.println("widget refresh " + this.serviceStatus);
 			widget.setServerStatus(this.serviceStatus);
 			widget.setClientList(this.clientsList);
 		}

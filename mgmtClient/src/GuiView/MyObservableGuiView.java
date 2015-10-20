@@ -68,7 +68,6 @@ mainWindow.setShutdownListener(new SelectionListener() {
 	
 	@Override
 	public void widgetSelected(SelectionEvent arg0) {
-		System.out.println("click");
 		setChanged();
 		notifyObservers("changeServerStatus .");
 		
@@ -96,7 +95,6 @@ String [] strings = mainWindow.getKickList();
 for (String string : strings) {
 	s=s+string+":";
 }
-System.out.println(s);
 notifyObservers(s);
 
 }
