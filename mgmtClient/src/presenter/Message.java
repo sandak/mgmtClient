@@ -9,7 +9,15 @@ public class Message extends CommonCommand {
 
 	@Override
 	public void doCommand(String param) {
-		presenter.getView().display(param);
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				presenter.getView().display(param);
+				
+			}
+		}).start();
+		
 
 	}
 

@@ -84,6 +84,7 @@ public class MyObservableCLIView extends ObservableCommonCLIView {
 	 */
 	@Override
 	public void exit() {
+		System.out.println("the session is done, exiting.");
 		exit = true;
 	}
 
