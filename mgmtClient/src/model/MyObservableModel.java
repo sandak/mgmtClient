@@ -117,16 +117,12 @@ public class MyObservableModel extends ObservableCommonModel {
 		try{
 			if(outChannelSocket!=null)
 			{
-				System.out.println("%1");
 				unregister();
-					System.out.println("%2");
 
 			outToServer.println("exit");
 				outToServer.flush();
-				System.out.println("%3");
+
 			}
-				
-			System.out.println("%4");
 				
 			if(inFromServer!=null)
 				inFromServer.close();
@@ -138,10 +134,8 @@ public class MyObservableModel extends ObservableCommonModel {
 					outChannelSocket.close();
 			}catch(IOException e)
 			{}
-		System.out.println("%5");
 		if(updatesChannel!=null)
 		try {
-			System.out.println("exitexit###################");
 			updateStop = true;
 			// do not execute jobs in queue, continue to execute running threads
 			System.out.println("shutting down");
