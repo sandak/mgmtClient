@@ -4,14 +4,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Display;
 import presenter.Properties;
 
 /**
@@ -36,26 +32,7 @@ public class MyObservableGuiView extends ObservableCommonGuiView {
 		super(new Properties());
 		properties.setDefaults();
 		mainWindow = new MgmtWindow(title, width, height , properties);
-		
-
 	
-	////////////////////////  the selection listener that sets the behavior of - properties update request - in this specific MVP  ////////////
-			mainWindow.setPropertiesUpdateListener(new SelectionListener() {
-	
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					
-					setChanged();
-					notifyObservers("propertiesUpdate "+mainWindow.getSelectedXMLpropertiesFile());
-				}
-				
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {
-					// nothing
-		
-		
-				}
-			});
 
 		
 ////////////////////////  the selection listener that sets the behavior of - exit request - in this specific MVP  ////////////
@@ -80,7 +57,7 @@ mainWindow.setShutdownListener(new SelectionListener() {
 	
 	@Override
 	public void widgetDefaultSelected(SelectionEvent arg0) {
-		// TODO Auto-generated method stub
+		// nothing
 		
 	}
 });
@@ -100,7 +77,7 @@ mainWindow.setShutdownListener(new SelectionListener() {
 
 	@Override
 	public void widgetDefaultSelected(SelectionEvent arg0) {
-		// TODO Auto-generated method stub
+		// nothing
 		
 	}
 });
@@ -225,6 +202,9 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see view.View#setStatus(boolean)
+	 */
 	@Override
 	public void setStatus(boolean b) {
 		mainWindow.setStatus(b);
@@ -232,6 +212,9 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see view.View#setClientList(java.util.ArrayList)
+	 */
 	@Override
 	public void setClientList(ArrayList<String[]> clientsList) {
 		mainWindow.setClientsList(clientsList);
@@ -240,6 +223,9 @@ public void widgetDefaultSelected(SelectionEvent arg0) {
 
 
 
+	/* (non-Javadoc)
+	 * @see view.View#updateLog(java.lang.String)
+	 */
 	@Override
 	public void updateLog(String param) {
 		mainWindow.updateLog(param);

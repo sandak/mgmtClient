@@ -8,9 +8,19 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * The Class UpdateHandler handles the updates from the server.
+ * 
+ * @author Guy Golan & Amit Sandak
+ */
 public class UpdateHandler implements ClientHandler {
+	
+	/** The model. */
 	Model model;
 
+	/* (non-Javadoc)
+	 * @see model.ClientHandler#handleClient(java.io.InputStream, java.io.OutputStream)
+	 */
 	@Override
 	public void handleClient(InputStream inFromClient, OutputStream outToClient) {
 		try {
@@ -29,16 +39,29 @@ public class UpdateHandler implements ClientHandler {
 					shutdownUpdate(in, out);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			if(model.getProperties().isDebug())
+				e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Shutdown update protocol.
+	 *
+	 * @param in the in stream
+	 * @param out the out stream
+	 */
 	private void shutdownUpdate(BufferedReader in, PrintWriter out) {
 		out.println("ok");
 		model.shutdownUpdate();
 		
 	}
 
+	/**
+	 * Log update protocol.
+	 *
+	 * @param in the in stream
+	 * @param out the out stream
+	 */
 	private void logUpdate(BufferedReader in, PrintWriter out) {
 		try {
 			out.println("ready");
@@ -48,12 +71,18 @@ public class UpdateHandler implements ClientHandler {
 			out.flush();
 			model.updateLog(parse);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if(model.getProperties().isDebug())
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * Status update protocol.
+	 *
+	 * @param in the in stream
+	 * @param out the out stream
+	 */
 	private void statusUpdate(BufferedReader in, PrintWriter out) {
 		try {
 			out.println("ready");
@@ -63,12 +92,18 @@ public class UpdateHandler implements ClientHandler {
 			out.println("done");
 			out.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if(model.getProperties().isDebug())
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * Clients update protocol.
+	 *
+	 * @param in the in stream
+	 * @param out the out stream 
+	 */
 	private void clientsUpdate(BufferedReader in, PrintWriter out) {
 		try {
 			out.println("ready");
@@ -91,11 +126,14 @@ public class UpdateHandler implements ClientHandler {
 			out.flush();
 			model.updateClientsList(list);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if(model.getProperties().isDebug())
 			e.printStackTrace();
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see model.ClientHandler#setModel(model.Model)
+	 */
 	@Override
 	public void setModel(Model model) {
 		this.model = model;

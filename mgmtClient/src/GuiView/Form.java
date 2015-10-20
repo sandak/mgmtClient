@@ -1,7 +1,6 @@
 package GuiView;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -10,7 +9,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 
@@ -18,12 +16,12 @@ import org.eclipse.swt.widgets.Widget;
  * A generic Form. this class getting an object and creating a
  *
  * @author Guy Golan && Amit Sandak.
- * @param <T> the generic type
  */
 public class Form extends BasicWindow{
 
 	Object created;
 	//Shell shell;
+	@SuppressWarnings("rawtypes")
 	Class format;
 	/**
 	 * Instantiates a new form.
@@ -34,12 +32,10 @@ public class Form extends BasicWindow{
 	 * @param width the width of the shell
 	 * @param height the height of the shell
 	 */
-	public Form(/*Shell parent,*/ Class format, String title) {
+	@SuppressWarnings("rawtypes")
+	public Form( Class format, String title) {
 		super(title,500,500);
-		//shell = new Shell(parent.getDisplay());
-		//created = null;
 		shell.setLayout(new GridLayout(2,false));
-		//Class<? extends Object> format = classObject.getClass();
 		this.format = format;
 		
 	}
@@ -66,10 +62,6 @@ public class Form extends BasicWindow{
 		}
 		
 		
-//		for (Field field : fields) {
-//			new Label(shell,SWT.TOP).setText(field.getName());
-//			hm.put(field.getName(), new Text(shell, SWT.BORDER));
-//		}
 		
 		Button saveButton=new Button(shell, SWT.PUSH);
 		saveButton.setText("  Save  ");
@@ -84,8 +76,9 @@ public class Form extends BasicWindow{
 								
 								try{
 								 boolean tmp = ((Button)hm.get(field.getName())).getSelection();
-								
-								}catch(ClassCastException e)
+									field.setAccessible(true);
+									field.set(created,tmp);
+								}catch(ClassCastException e) //catch if the cast to button failed then cast to Text
 								{
 								String tmp =((Text)hm.get(field.getName())).getText();
 								String type = field.getType().getSimpleName();
@@ -109,18 +102,18 @@ public class Form extends BasicWindow{
 							shell.dispose();
 						}
 						catch (IllegalArgumentException | IllegalAccessException e) {
-								// TODO Auto-generated catch block
+								// nothing
 								e.printStackTrace();
 						}
 						catch (InstantiationException | SecurityException e) {
-							// TODO Auto-generated catch block
+							//nothing
 							e.printStackTrace();
 						}	
 					}
 					
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {
-						// TODO Auto-generated method stub
+						//nothing
 						
 					}
 				});	
@@ -138,12 +131,5 @@ public class Form extends BasicWindow{
 		
 	}
 
-///**
-// * Run the form shell
-// */
-//public void run()
-//{
-//	shell.open();
-//}
 
 }

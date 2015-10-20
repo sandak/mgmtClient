@@ -3,7 +3,6 @@ package GuiView;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,20 +13,41 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+/**
+ * The Class ClientsTableWidget
+ * is a GUI widget that represent the clients connected to a server.
+ * 
+ * @author Guy Golan && Amit Sandak.
+ */
 public class ClientsTableWidget extends ServerDisplayer {
+
+/** The clients table. */
 Table clientsTable;
+
+/** The kick client button. */
 Button kickClient;
+
+/** The table items. */
 ArrayList<TableItem> items;
+
+/** The kick button selection listener. */
 SelectionListener kickListener;
+
+/** The clients that chosen to be kicked. */
 String [] kicks;
 
-	ClientsTableWidget(Composite arg0, int arg1) {
-		super(arg0, arg1);
+	/**
+	 * Instantiates a new clients table widget.
+	 *
+	 * @param parent the parent composite.
+	 * @param param the SWT style parameters.
+	 */
+	ClientsTableWidget(Composite parent, int param) {
+		super(parent, param);
 		items = new ArrayList<TableItem>();
 		setLayout(new GridLayout(2, false));
 		clientsTable=new Table(this, SWT.BORDER|SWT.V_SCROLL|SWT.H_SCROLL);
@@ -64,7 +84,7 @@ String [] kicks;
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
+				//nothing
 				
 			}
 		});
@@ -79,6 +99,10 @@ String [] kicks;
 			}
 		});
 	}
+	
+	/* (non-Javadoc)
+	 * @see GuiView.ServerDisplayer#setClientList(java.util.ArrayList)
+	 */
 	@Override
 	public void setClientList(ArrayList<String[]> list)
 		{
@@ -108,33 +132,57 @@ String [] kicks;
 			
 		
 		}
+	
+	/**
+	 * Gets the connected clients table.
+	 *
+	 * @return the connected clients table
+	 */
 	public Table getClientsTable() {
 		return clientsTable;
 	}
+	
+	/**
+	 * Sets the connected clients table.
+	 *
+	 * @param clientsTable the new connected clients table
+	 */
 	public void setClientsTable(Table clientsTable) {
 		this.clientsTable = clientsTable;
 	}
-	public Button getKickClient() {
-		return kickClient;
-	}
-	public void setKickClient(Button kickClient) {
-		this.kickClient = kickClient;
-	}
-	public ArrayList<TableItem> getItems() {
-		return items;
-	}
-	public void setItems(ArrayList<TableItem> items) {
-		this.items = items;
-	}
+	
+	/**
+	 * Gets the kick button selection listener.
+	 *
+	 * @return the kick button selection listener
+	 */
 	public SelectionListener getKickListener() {
 		return kickListener;
 	}
+	
+	/**
+	 * Sets the kick button selection listener.
+	 *
+	 * @param kickListener the new kick button selection listener
+	 */
 	public void setKickListener(SelectionListener kickListener) {
 		this.kickListener = kickListener;
 	}
+	
+	/**
+	 * Gets the list of clients to be kicked.
+	 *
+	 * @return the list of clients to be kicked
+	 */
 	public String[] getKicks() {
 		return kicks;
 	}
+	
+	/**
+	 * Sets the list of clients to be kicked.
+	 *
+	 * @param kicks the new list of clients to be kicked
+	 */
 	public void setKicks(String[] kicks) {
 		this.kicks = kicks;
 	}

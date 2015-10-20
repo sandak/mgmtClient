@@ -2,7 +2,6 @@ package view;
 
 import java.util.ArrayList;
 
-import presenter.Presenter;
 import presenter.Properties;
 
 /**
@@ -13,7 +12,7 @@ import presenter.Properties;
 public interface View {
 
 /**
- * Display an array of strings
+ * Display an array of strings.
  *
  * @param strings the strings array
  */
@@ -47,9 +46,9 @@ public interface View {
 	
 	
 	/**
-	 * Display error.
+	 * Display error message.
 	 *
-	 * @param message the error message
+	 * @param message the error text 
 	 */
 	public void displayError(String message);
 	
@@ -61,10 +60,25 @@ public interface View {
 	 */
 	public void setProperties(Properties prop);
 
+	/**
+	 * Sets the service status.
+	 *
+	 * @param b the new status
+	 */
 	public void setStatus(boolean b);
 
+	/**
+	 * Sets the connected client list.
+	 *
+	 * @param clientsList the new client list
+	 */
 	public void setClientList(ArrayList<String[]> clientsList);
 
+	/**
+	 * Update log.
+	 *
+	 * @param param the param
+	 */
 	public void updateLog(String param);
 	
 }

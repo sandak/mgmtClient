@@ -1,9 +1,6 @@
 package boot;
 
-import java.beans.XMLDecoder;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
@@ -16,24 +13,19 @@ import presenter.Presenter;
 import presenter.Properties;
 import view.ObservableCommonView;
 
-public class AdminTest {
+
+/**
+ * The Class RunMgmtApp run the management application.
+ * 
+ * @author Guy Golan && Amit Sandak.
+ */
+public class RunMgmtApp {
 
 	public static void main(String[] args) {
 		Form f = new Form(Properties.class,"properties");
 		f.run();
-		String defaultXMLname = "properties.xml";
 		Properties prop=(Properties)f.getObject();
-//		try {
-//			FileInputStream in = new FileInputStream(defaultXMLname);		//tries to read the properties.xml default pathname.
-//			XMLDecoder decoder = new XMLDecoder(in);
-//			prop = (Properties)decoder.readObject();		//decoding the xml file.
-//			decoder.close();
-//					
-//		} catch (FileNotFoundException e) {				//if no properties.xml was found in directory, generating default properties.
-//			System.out.println("file not found, default properties will be loaded");
-//			prop = new Properties();
-//			prop.setDefaults();
-//		}
+
 		ObservableCommonView view = null;
 		switch (prop.getUi())				//according to the properties initializing the view.
 		{

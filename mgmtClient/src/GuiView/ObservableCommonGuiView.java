@@ -4,6 +4,7 @@ package GuiView;
 import presenter.Properties;
 import view.ObservableCommonView;
 
+
 /**
  * This abstract class that represents a generic GUI view in the MVP.
  * 
@@ -11,7 +12,7 @@ import view.ObservableCommonView;
  */
 public abstract class ObservableCommonGuiView extends ObservableCommonView {
 	
-	/** The properties of the game. */
+	/** The properties of the connection and the app. */
 	protected Properties properties;
 
 	/**

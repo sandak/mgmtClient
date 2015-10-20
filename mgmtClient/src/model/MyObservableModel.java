@@ -22,18 +22,36 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class MyObservableModel extends ObservableCommonModel {
+	
+	/** The updates channel. */
 	ServerSocket updatesChannel;
+	
+	/** The update thread. */
 	Thread updateThread;
+	
+	/** The update stop flag. */
 	volatile boolean updateStop;
+	
+	/** The thread pool. */
 	ExecutorService threadPool;
+	
+	/** The server update handler. */
 	ClientHandler updateHandler;
+	
+	/** The commands to the server channel socket. */
 	Socket outChannelSocket;
+	
+	/** The out writer to the server in the commands channel. */
 	PrintWriter outToServer;
+	
+	/** The reader from server in the commands channel. */
 	BufferedReader inFromServer;
 
 	/**
 	 * Ctor. Tries to get old maps from cached maps , if failed initializing new
 	 * maps.
+	 *
+	 * @param updateHandler the update handler
 	 */
 	public MyObservableModel(ClientHandler updateHandler) { // Ctor
 		super();
@@ -41,6 +59,10 @@ public class MyObservableModel extends ObservableCommonModel {
 		updateHandler.setModel(this);
 
 	}
+
+/* (non-Javadoc)
+ * @see model.Model#start()
+ */
 @Override
 	public boolean start()
 	{
@@ -54,21 +76,25 @@ public class MyObservableModel extends ObservableCommonModel {
 	
 	startUpdateChannel();
 	
-	register();	
+	register();	//register in the server in order to get updates.
 	return true;
 	}catch (ConnectException e)
-	{return false;}catch (IOException e)
+	{return false;}catch (IOException e) //if the connection fails eturn false
 	{return false;}
 
 	}
+	
+	/**
+	 * opens the update channel and waiting to update connections.
+	 */
 	public void startUpdateChannel() {
 		updateStop = false;
 		try {
 			updatesChannel = new ServerSocket(properties.getUpdatePort());
 			updatesChannel.setSoTimeout(10000);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			if(properties.isDebug())
+				e1.printStackTrace();
 		}
 		threadPool = Executors.newFixedThreadPool(1);
 
@@ -78,33 +104,37 @@ public class MyObservableModel extends ObservableCommonModel {
 			public void run() {
 				while (!updateStop) {
 					try {
-						final Socket someClient = updatesChannel.accept();
-						if (someClient != null) {
+						final Socket someUpdate = updatesChannel.accept();
+						if (someUpdate != null) {
 							threadPool.execute(new Runnable() {
 								@Override
 								public void run() {
 									try {
 										if (properties.isDebugMode())
 											System.out.println("server connecting in the update channel");
-										InputStream in = someClient.getInputStream();
-										OutputStream out = someClient.getOutputStream();
+										InputStream in = someUpdate.getInputStream();
+										OutputStream out = someUpdate.getOutputStream();
 										updateHandler.handleClient(in, out);
 										in.close();
 										out.close();
-										someClient.close();
+										someUpdate.close();
 									} catch (IOException e) {
-										e.printStackTrace();
+										if (properties.isDebug())
+											e.printStackTrace();
 									}
 								}
 							});
 						}
 					} catch (SocketTimeoutException e) {
-						System.out.println("no updates...");
+						if (properties.isDebug())
+						System.out.println("no new updates...");
 					} catch (IOException e) {
-						e.printStackTrace();
+						if (properties.isDebug())
+							e.printStackTrace();
 					}
 				}
-				System.out.println("done accepting new updates.");
+				if(properties.isDebug())
+					System.out.println("done accepting new updates.");
 			} // end of the mainServerThread task
 		});
 
@@ -112,19 +142,22 @@ public class MyObservableModel extends ObservableCommonModel {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#exit()
+	 */
 	@Override
 	public void exit() {
 		try{
 			if(outChannelSocket!=null)
 			{
-				unregister();
+				unregister(); //ask the server to stop the updates
 
-			outToServer.println("exit");
+			outToServer.println("exit"); //exit sign in the protocol
 				outToServer.flush();
 
 			}
 				
-			if(inFromServer!=null)
+			if(inFromServer!=null)// closing the resources
 				inFromServer.close();
 			if(outToServer!=null)
 				outToServer.close();
@@ -134,11 +167,12 @@ public class MyObservableModel extends ObservableCommonModel {
 					outChannelSocket.close();
 			}catch(IOException e)
 			{}
-		if(updatesChannel!=null)
+		if(updatesChannel!=null) //closing the update channel
 		try {
 			updateStop = true;
 			// do not execute jobs in queue, continue to execute running threads
-			System.out.println("shutting down");
+			if (properties.isDebug())
+				System.out.println("shutting down");
 			threadPool.shutdown();
 			// wait 10 seconds over and over again until all running jobs have
 			// finished
@@ -146,23 +180,29 @@ public class MyObservableModel extends ObservableCommonModel {
 			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)));
 
 			
-				System.out.println("all the tasks have finished");
+				if(properties.isDebug())
+					System.out.println("all the tasks have finished");
 
 			updateThread.join();
-			System.out.println("thread is done");
+			if(properties.isDebug())
+				System.out.println("thread is done");
 
 			updatesChannel.close();
-			System.out.println(" session is safely closed");
+			if (properties.isDebug())
+				System.out.println(" session is safely closed");
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(properties.isDebug())
+				e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 	}
 
 
+	/**
+	 * Unregister request protocol.
+	 */
 	private void unregister() {
 		try {
 			outToServer.println("unregister");
@@ -174,20 +214,25 @@ public class MyObservableModel extends ObservableCommonModel {
 
 	}
 
+	/**
+	 * Register request protocol.
+	 */
 	private void register() {
 		try {
 			outToServer.println("register");
 			outToServer.flush();
 			inFromServer.readLine();
 
-			
-
 		} catch (IOException e) {
-			// do nothing
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 	
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#startStopServer()
+	 */
 	@Override
 	public void startStopServer() {
 		try {
@@ -196,31 +241,24 @@ public class MyObservableModel extends ObservableCommonModel {
 			outToServer.flush();
 
 			parse = inFromServer.readLine();
-			if (parse.contains("online"))
+			if (parse.contains("online")) //check the service status and requesting to start or stop it 
 				outToServer.println("stop server");
 			else
 				outToServer.println("start server");
 			outToServer.flush();
 			parse = inFromServer.readLine();
-			outToServer.println("get status");
-			outToServer.flush();
-			parse = inFromServer.readLine();
-			setChanged();
-			if (parse.contains("online"))
-				notifyObservers("getStatus status");
-			else
-				notifyObservers("getStatus status");
-
-		
-
-			
+				
 		} catch (IOException e) {
-			// do nothing
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 
 	}
 
 
+	/* (non-Javadoc)
+	 * @see model.Model#getStatus()
+	 */
 	@Override
 	public void getStatus() {
 		try {
@@ -233,17 +271,20 @@ public class MyObservableModel extends ObservableCommonModel {
 			setChanged();
 			if (parse.contains("online")) {
 				notifyObservers("updateStatus online");
-				System.out.println("online");
 			} else
 				notifyObservers("updateStatus offline");
 
-
+			if(properties.isDebug())
+				System.out.println("status updated request done");
 			
 		} catch (IOException e) {
-			// do nothing
-		}
+if (properties.isDebug())	
+	e.printStackTrace();}
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#kick(java.lang.String)
+	 */
 	@Override
 	public void kick(String param) {
 		try {
@@ -260,17 +301,24 @@ public class MyObservableModel extends ObservableCommonModel {
 	
 
 		} catch (IOException e) {
-			// do nothing
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#updateLog(java.lang.String)
+	 */
 	@Override
 	public void updateLog(String parse) {
 		setChanged();
 		notifyObservers("updateLog "+parse);
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#updateStatus(java.lang.String)
+	 */
 	@Override
 	public void updateStatus(String stat) {
 		setChanged();
@@ -278,6 +326,9 @@ public class MyObservableModel extends ObservableCommonModel {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see model.Model#getData()
+	 */
 	@Override
 	public void getData() {
 		try {
@@ -290,10 +341,15 @@ public class MyObservableModel extends ObservableCommonModel {
 			
 
 		} catch (IOException e) {
-			// do nothing
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see model.Model#shutDownProtocol()
+	 */
 	@Override
 	public void shutDownProtocol() {
 		try {
@@ -301,15 +357,20 @@ public class MyObservableModel extends ObservableCommonModel {
 		outToServer.flush();
 		inFromServer.readLine();//ok
 		} catch (IOException e) {
-			// do nothing
+			if(properties.isDebug())
+				e.printStackTrace();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see model.Model#shutdownUpdate()
+	 */
 	@Override
 	public void shutdownUpdate() {
 		setChanged();
-		notifyObservers("message server is shuting down!" );
+		notifyObservers("message server is shuting down!" ); 
 		setChanged();
-		notifyObservers("exit exit");
+		notifyObservers("exit exit"); //starting exit sequence
 		
 	}
 

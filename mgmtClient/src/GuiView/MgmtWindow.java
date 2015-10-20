@@ -3,11 +3,7 @@ package GuiView;
 import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -15,8 +11,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Widget;
-
 import presenter.Properties;
 
 /**
@@ -25,34 +19,35 @@ import presenter.Properties;
  * @author Guy Golan && Amit Sandak.
  */
 public class MgmtWindow extends BasicWindow {
-	boolean serverStatus;
+	
+	/** The service status. */
+	boolean serviceStatus;
+	
+	/** The Start\ stop button. */
 	Button StartStopButton;
+	
+	/** The shutdown button. */
 	Button shutDown;
+	
+	/** The status label. */
 	Label status;
+	
+	/** The status widget. */
 	StatusMgmtWidget statusWidget;
+	
+	/** The connected clients widget. */
 	ClientsTableWidget clientsWidget;
+	
+	/** The server log widget. */
 	ServerLogWidget serverLog;
 	
-	
-	/** The selected XML properties file. */
-	protected String selectedXMLpropertiesFile;
-
-	/**
-	 * the selection listener that sets the behavior of - exit request - in the
-	 * MVP
-	 */
+	/** the selection listener that sets the behavior of - exit request - in the MVP. */
 	protected DisposeListener exitListener;
 
-	/**
-	 * the selection listener that sets the behavior of - update properties
-	 * request - in the MVP
-	 */
+	/** the selection listener that sets the behavior of - update properties request - in the MVP. */
 	protected SelectionListener propertiesUpdateListener;
 
-	/**
-	 * the selection listener that sets the behavior of - start / stop request -
-	 * in the MVP
-	 */
+	/** the selection listener that sets the behavior of - start / stop request - in the MVP. */
 	protected SelectionListener startStopListener;
 
 	/** The widgets list. */
@@ -60,8 +55,14 @@ public class MgmtWindow extends BasicWindow {
 
 	/** The server properties. */
 	protected Properties properties;
+	
+	/** The connected clients list. */
 	protected ArrayList<String[]> clientsList;
+	
+	/** The kick button selection listener. */
 	protected SelectionListener kickListener;
+	
+	/** The shutdown button selection listener. */
 	protected SelectionListener shutdownListener;
 
 	/**
@@ -79,7 +80,6 @@ public class MgmtWindow extends BasicWindow {
 	public MgmtWindow(String title, int width, int height, Properties properties) {
 		super(title, width, height);
 		this.properties = properties;
-		selectedXMLpropertiesFile = null;
 		widgetsList = new ArrayList<ServerDisplayer>();
 		shell.setImage(new Image(display, "resources/mgmticon.png"));
 	}
@@ -97,16 +97,11 @@ public class MgmtWindow extends BasicWindow {
 		Image image = new Image(display, "resources/mgmtbackground.jpg");
 		shell.setBackgroundImage(image);
 		shell.setBackgroundMode(SWT.INHERIT_FORCE);
-		// shell.setCursor(new Cursor(shell.getDisplay(), new
-		// ImageData("resources/Cursor_Greylight.png").scaledTo(27, 25), 16,
-		// 0));
+	
 		shutDown = new Button(shell, SWT.PUSH);
 		shutDown.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, false, 2, 1));
 		
-//		GC gc = new GC(shell);
-//		Image btimage = new Image(display, "resources/abort.jpg");
-//		gc.drawImage(btimage, 0, 0, btimage.getBounds().x, btimage.getBounds().y, 0, 0, shutDown.getBounds().width,shutDown.getBounds().height);
-//			shutDown.setImage(btimage);
+
 			shutDown.setText("        Shutdown server         ");
 			shutDown.addSelectionListener(shutdownListener);
 		statusWidget = new StatusMgmtWidget(shell, SWT.NULL, startStopListener);
@@ -137,17 +132,16 @@ public class MgmtWindow extends BasicWindow {
 	 */
 	public void widgetsRefresh() {
 		for (ServerDisplayer widget : widgetsList) {
-			System.out.println("widget refresh " + this.serverStatus);
-			widget.setServerStatus(this.serverStatus);
+			System.out.println("widget refresh " + this.serviceStatus);
+			widget.setServerStatus(this.serviceStatus);
 			widget.setClientList(this.clientsList);
 		}
 	}
 
 	/**
-	 * Display error.
+	 * Display error message.
 	 *
-	 * @param string
-	 *            the message
+	 * @param string the message text
 	 */
 	public void displayError(String string) {
 		Display.getDefault().syncExec(new Runnable() {
@@ -163,10 +157,9 @@ public class MgmtWindow extends BasicWindow {
 	}
 
 	/**
-	 * Display a string.
+	 * Display a infometion message.
 	 *
-	 * @param string
-	 *            the string to display
+	 * @param string the text to display
 	 */
 	public void display(String string) {
 		Display.getDefault().syncExec(new Runnable() {
@@ -183,11 +176,10 @@ public class MgmtWindow extends BasicWindow {
 	}
 
 	/**
-	 * Sets the selection listener that sets the behavior of - start / stop
+	 * Sets the selection listener that define the behavior of - start / stop
 	 * request - in the MVP.
 	 *
-	 * @param selectionListener
-	 *            the new solve listener
+	 * @param startStopListener the new start stop listener
 	 */
 	public void setStartStopListener(SelectionListener startStopListener) {
 		this.startStopListener = startStopListener;
@@ -220,27 +212,33 @@ public class MgmtWindow extends BasicWindow {
 
 	}
 
+
 	/**
-	 * Gets the selected XML properties file.
+	 * Sets the service status.
 	 *
-	 * @return the selected XML properties file
+	 * @param b the new status
 	 */
-	public String getSelectedXMLpropertiesFile() {
-		return selectedXMLpropertiesFile;
-
-	}
-
 	public void setStatus(boolean b) {
-		this.serverStatus = b;
+		this.serviceStatus = b;
 		widgetsRefresh();
 	}
 
+	/**
+	 * Sets the connected clients list.
+	 *
+	 * @param clientsList the new connected clients list
+	 */
 	public void setClientsList(ArrayList<String[]> clientsList) {
 		this.clientsList = clientsList;
 		widgetsRefresh();
 
 	}
 
+	/**
+	 * Sets the kick button selection listener.
+	 *
+	 * @param selectionListener the new kick button selection listener
+	 */
 	public void setKickListener(SelectionListener selectionListener) {
 		this.kickListener = selectionListener;
 		if (clientsWidget != null)
@@ -248,16 +246,31 @@ public class MgmtWindow extends BasicWindow {
 
 	}
 
+	/**
+	 * Gets the list of clients to be kicked.
+	 *
+	 * @return the kick list
+	 */
 	public String[] getKickList() {
 		return clientsWidget.getKicks();
 	}
 
+	/**
+	 * Update log.
+	 *
+	 * @param param the log text
+	 */
 	public void updateLog(String param) {
 		if(serverLog!=null)
 		serverLog.appendText(param);
 
 	}
 
+	/**
+	 * Sets the shutdown button selection listener.
+	 *
+	 * @param selectionListener the new shutdown listener
+	 */
 	public void setShutdownListener(SelectionListener selectionListener) {
 		this.shutdownListener = selectionListener;
 		if (shutDown!=null)
