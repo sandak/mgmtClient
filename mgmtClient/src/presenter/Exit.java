@@ -16,21 +16,23 @@ public class Exit extends CommonCommand {
 	 */
 	@Override
 	public void doCommand(String param) {
+		if(!presenter.isCloseProcess())
+		{
+			presenter.setCloseProcess(true);
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-		System.out.println("exitcommand");	//safely exiting model and view.
+		//safely exiting model and view.
 		presenter.getModel().exit();
 		presenter.getView().exit();	
-		System.out.println("exitview");
 				
 		if(presenter.getProperties().isDebug())
-			System.out.println("PRESENTER EXIT");
+			System.out.println("exit process is done");
 				
 			}
 		}).start();
 		
-	}
+	}}
 
 }

@@ -142,13 +142,13 @@ public class MyObservableModel extends ObservableCommonModel {
 			threadPool.shutdown();
 			// wait 10 seconds over and over again until all running jobs have
 			// finished
-//			boolean allTasksCompleted = false;
-//			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)));
-			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
-							threadPool.shutdownNow();
-							if (properties.isDebugMode())
-								System.out.println("threads terminated violently!");
-						}
+			boolean allTasksCompleted = false;
+			while (!(allTasksCompleted = threadPool.awaitTermination(10, TimeUnit.SECONDS)));
+//			if (!threadPool.awaitTermination(5, TimeUnit.SECONDS)) {
+//							threadPool.shutdownNow();
+//							if (properties.isDebugMode())
+//								System.out.println("threads terminated violently!");
+//						}
 				System.out.println("all the tasks have finished");
 
 			updateThread.join();

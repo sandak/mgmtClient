@@ -14,11 +14,12 @@ import view.View;
  *
  */
 public class Presenter implements Observer {
-	private Model model;	//the model.
-	private View view;		//the view.
-	private Properties properties;		//system properties.
+	protected Model model;	//the model.
+	protected View view;		//the view.
+	protected Properties properties;		//system properties.
 	
-	private HashMap<String, Command> commandMap;	//the presenter available commands in a map.
+	protected HashMap<String, Command> commandMap;	//the presenter available commands in a map.
+	protected boolean closeProcess; //exit process flag
 	
 	
 	public Presenter(Model model, View view) {
@@ -123,6 +124,13 @@ public void start()
 	public void closeView() {
 		view.exit();
 		
+	}
+	public void setCloseProcess(boolean b) {
+		closeProcess=b;
+		
+	}
+	public boolean isCloseProcess() {
+		return closeProcess;
 	}
 					
 }
